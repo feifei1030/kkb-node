@@ -27,18 +27,20 @@ if (fs.existsSync(filePath)) {
 }
 
 const updateCache = () => {
+    let newCache = {}
     let all = Object.keys(cacheList).map(item => {
         return new Promise((resolve, reject) => {
             console.log('开始处理', item)
             cacheList[item]().then(res => {
-                cache[item] = res
+                newCache[item] = res
                 console.log('处理完毕', item)
                 resolve()
             })
         })
     })
     Promise.all(all).then(() => {
-        fs.writeFileSync(filePath, JSON.stringify(cache))
+        cache = newCache
+        fs.writeFileSync(filePath, JSON.stringify(newCache))
         console.log('数据更新完毕')
     })
 }
